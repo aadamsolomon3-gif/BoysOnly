@@ -26,6 +26,25 @@ else
     echo "Kando already installed."
 fi
 
+# Copy local 'kando' folder to ~/.config, replacing existing one if needed
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+LOCAL_KANDO="$SCRIPT_DIR/kando"
+DEST_KANDO="$HOME/.config/kando"
+
+if [[ -d "$LOCAL_KANDO" ]]; then
+    echo "Copying local kando folder to ~/.config..."
+    # Remove existing config if it exists
+    if [[ -d "$DEST_KANDO" ]]; then
+        rm -rf "$DEST_KANDO"
+        echo "Existing ~/.config/kando removed."
+    fi
+    # Copy folder
+    cp -r "$LOCAL_KANDO" "$DEST_KANDO"
+    echo "Local kando folder copied to ~/.config/kando."
+else
+    echo "No 'kando' folder found in script directory. Skipping copy."
+fi
+
 # Add to Hyprland exec file
 EXEC_FILE="$HOME/.config/hypr/hyprland/execs.conf"
 mkdir -p "$(dirname "$EXEC_FILE")"
