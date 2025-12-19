@@ -1,10 +1,23 @@
 #!/usr/bin/env bash
-
 set -e
 
-# --- 1) Install kando-bin silently ---
-echo "Installing kando-bin..."
-yes | yay -S --noconfirm kando-bin
+# --- 0) Function to check if a package is installed ---
+is_installed() {
+    local pkg="$1"
+    if pacman -Qs "$pkg" &> /dev/null || yay -Qs "$pkg" &> /dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# --- 1) Install kando-bin silently if not installed ---
+if is_installed "kando-bin"; then
+    echo "kando-bin is already installed, skipping installation..."
+else
+    echo "Installing kando-bin..."
+    yes | yay -S --noconfirm kando-bin
+fi
 
 # --- 2) Copy local 'kando' folder to ~/.config ---
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
@@ -37,7 +50,7 @@ mkdir -p "$(dirname "$KEYBIND_FILE")"
 
 # Replace :example-menu with the actual menu shortcut you want
 MENU_ID=":example-menu"
-KEYBIND="bind = CTRL, Space, global, $MENU_ID"
+KEYBIND="bind = CTRL, Space, global, $MENU_ID # Kando Menu"
 
 if ! grep -Fxq "$KEYBIND" "$KEYBIND_FILE" 2>/dev/null; then
     echo "$KEYBIND" >> "$KEYBIND_FILE"
