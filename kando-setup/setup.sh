@@ -38,7 +38,7 @@ KEYBIND_FILE="$HOME/.config/hypr/hyprland/keybinds.conf"
 mkdir -p "$(dirname "$KEYBIND_FILE")"
 
 # Replace :example-menu with the actual menu shortcut you want
-MENU_ID=":default-menu"
+MENU_ID=":example-menu"
 KEYBIND="bind = CTRL, Space, global, $MENU_ID"
 
 if ! grep -Fxq "$KEYBIND" "$KEYBIND_FILE" 2>/dev/null; then
