@@ -20,6 +20,8 @@ else
     echo "No 'kando' folder found in script directory. Skipping copy."
 fi
 
+kando & sleep 2; pkill kando
+
 # --- 3) Add exec-once to Hyprland ---
 EXEC_FILE="$HOME/.config/hypr/hyprland/execs.conf"
 mkdir -p "$(dirname "$EXEC_FILE")"
