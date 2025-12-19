@@ -16,11 +16,11 @@ else
     echo "yay is already installed, skipping..."
 fi
 
-# Install WhatsApp from AUR
-echo "Installing WhatsApp..."
-yay -S --noconfirm whatsapp-linux-desktop-bin
-
-# Optional alternative:
-# yay -S --noconfirm unofficial-whatsapp
-
-echo "Installation complete! You can now run WhatsApp."
+# Check if WhatsApp AUR package is installed
+if pacman -Qs whatsapp-linux-desktop-bin &> /dev/null; then
+    echo "WhatsApp is already installed, skipping..."
+else
+    echo "Installing WhatsApp..."
+    yay -S --noconfirm whatsapp-linux-desktop-bin
+    echo "Installation complete! You can now run WhatsApp."
+fi
