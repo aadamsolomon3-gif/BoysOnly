@@ -7,7 +7,7 @@ echo "=== Plymouth Theme Installer (Automatic Replacement) ==="
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Variables
-THEME_NAME="my-plymouth-theme"                # name of the theme folder you want to apply
+THEME_NAME="mc"                # name of the theme folder you want to apply
 THEME_BACKUP_DIR="$SCRIPT_DIR/plymouth-themes"  # relative folder containing your themes
 PLYMOUTH_DIR="/usr/share/plymouth/themes"
 
