@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ### ------------------ Variables ------------------ ###
 # GRUB
 GRUB_THEME_DIR="$SCRIPT_DIR/grub-themes"   # optional: your GRUB theme folder
-GRUB_THEME_NAME="my-grub-theme"            # folder name in grub-themes
+GRUB_THEME_NAME="minegrub-world-selection"            # folder name in grub-themes
 
 # Plymouth
 PLYMOUTH_THEME_DIR="$SCRIPT_DIR/plymouth-themes"
@@ -17,7 +17,7 @@ PLYMOUTH_THEME_NAME="mc"
 
 # SDDM
 SDDM_THEME_DIR="$SCRIPT_DIR/sddm-themes"
-SDDM_THEME_NAME="mytheme"
+SDDM_THEME_NAME="minesddm"
 
 # System paths
 GRUB_DIR="/boot/grub"
