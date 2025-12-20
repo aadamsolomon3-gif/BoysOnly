@@ -7,10 +7,11 @@ echo "==============================="
 
 # List of install scripts (update with your actual paths)
 install_scripts=(
+    "wallpaper-setup/setup.sh"
     "ai-setup/setup.sh"
-    "kando-setup/setup.sh"
     "app-setup/setup.sh"
     "keybind-setup/setup.sh"
+    "kando-setup/setup.sh"
     "kitty-setup/setup.sh"
 )
 
