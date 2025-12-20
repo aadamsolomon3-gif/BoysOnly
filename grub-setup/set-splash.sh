@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=== Plymouth Theme Installer (Automatic Replacement + Splash Fix) ==="
+echo "=== Plymouth Theme Installer (Automatic Replacement + Splash Fix + Smooth Boot) ==="
 
 # Detect the directory where the script is running
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -39,26 +39,38 @@ plymouth-set-default-theme -R "$THEME_NAME"
 MKINITCPIO_CONF="/etc/mkinitcpio.conf"
 if ! grep -q "plymouth" "$MKINITCPIO_CONF"; then
     echo "Adding plymouth to HOOKS in $MKINITCPIO_CONF..."
-    # Insert plymouth before 'filesystems'
-    sudo sed -i 's/\(HOOKS=.*\)filesystems/\1plymouth filesystems/' "$MKINITCPIO_CONF"
+    sed -i 's/\(HOOKS=.*\)filesystems/\1plymouth filesystems/' "$MKINITCPIO_CONF"
 fi
 
 # Regenerate initramfs
 echo "Regenerating initramfs..."
 mkinitcpio -P
 
-# --- Ensure 'splash' is in GRUB_CMDLINE_LINUX_DEFAULT ---
+# --- Ensure GRUB kernel parameters include splash and cursor settings ---
 GRUB_CONF="/etc/default/grub"
 if grep -q "GRUB_CMDLINE_LINUX_DEFAULT" "$GRUB_CONF"; then
-    echo "Ensuring 'splash' is in GRUB_CMDLINE_LINUX_DEFAULT..."
-    sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\([^"]*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 splash"/' "$GRUB_CONF"
+    echo "Ensuring 'splash vt.global_cursor_default=0' is in GRUB_CMDLINE_LINUX_DEFAULT..."
+    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\([^"]*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 splash vt.global_cursor_default=0"/' "$GRUB_CONF"
 else
-    echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"' >> "$GRUB_CONF"
+    echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash vt.global_cursor_default=0"' >> "$GRUB_CONF"
 fi
+
+# --- Ensure GRUB graphics settings ---
+if ! grep -q "GRUB_GFXMODE" "$GRUB_CONF"; then
+    echo 'GRUB_GFXMODE=auto' >> "$GRUB_CONF"
+fi
+if ! grep -q "GRUB_GFXPAYLOAD_LINUX" "$GRUB_CONF"; then
+    echo 'GRUB_GFXPAYLOAD_LINUX=keep' >> "$GRUB_CONF"
+fi
+
+# --- Enable Plymouth services ---
+for svc in plymouth-start plymouth-quit plymouth-quit-wait; do
+    systemctl enable "$svc.service"
+done
 
 # Regenerate GRUB configuration
 echo "Regenerating GRUB config..."
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "Plymouth theme '$THEME_NAME' applied successfully!"
-echo "Reboot to see your login screen with splash."
+echo "Reboot to see your login screen with smooth splash and no black screens."
