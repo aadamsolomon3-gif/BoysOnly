@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=== Plymouth Theme Installer (Automatic Replacement) ==="
+echo "=== Plymouth Theme Installer (Automatic Replacement + Splash Fix) ==="
 
 # Detect the directory where the script is running
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -35,13 +35,30 @@ chown -R root:root "$PLYMOUTH_DIR/$THEME_NAME"
 echo "Setting Plymouth theme..."
 plymouth-set-default-theme -R "$THEME_NAME"
 
-# Update initramfs
-echo "Updating initramfs..."
-if command -v mkinitcpio &> /dev/null; then
-    mkinitcpio -P
-else
-    echo "Warning: mkinitcpio not found. Please update your initramfs manually."
+# --- Ensure Plymouth hook is in mkinitcpio.conf ---
+MKINITCPIO_CONF="/etc/mkinitcpio.conf"
+if ! grep -q "plymouth" "$MKINITCPIO_CONF"; then
+    echo "Adding plymouth to HOOKS in $MKINITCPIO_CONF..."
+    # Insert plymouth before 'filesystems'
+    sudo sed -i 's/\(HOOKS=.*\)filesystems/\1plymouth filesystems/' "$MKINITCPIO_CONF"
 fi
 
+# Regenerate initramfs
+echo "Regenerating initramfs..."
+mkinitcpio -P
+
+# --- Ensure 'splash' is in GRUB_CMDLINE_LINUX_DEFAULT ---
+GRUB_CONF="/etc/default/grub"
+if grep -q "GRUB_CMDLINE_LINUX_DEFAULT" "$GRUB_CONF"; then
+    echo "Ensuring 'splash' is in GRUB_CMDLINE_LINUX_DEFAULT..."
+    sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\([^"]*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 splash"/' "$GRUB_CONF"
+else
+    echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"' >> "$GRUB_CONF"
+fi
+
+# Regenerate GRUB configuration
+echo "Regenerating GRUB config..."
+grub-mkconfig -o /boot/grub/grub.cfg
+
 echo "Plymouth theme '$THEME_NAME' applied successfully!"
-echo "Reboot to see your login screen."
+echo "Reboot to see your login screen with splash."
