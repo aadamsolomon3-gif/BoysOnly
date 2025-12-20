@@ -13,6 +13,7 @@ install_scripts=(
     "keybind-setup/setup.sh"
     "kando-setup/setup.sh"
     "kitty-setup/setup.sh"
+    "grub-setup/setup.sh"
 )
 
 # Function to check if an app/package is installed
