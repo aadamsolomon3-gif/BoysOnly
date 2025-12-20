@@ -46,8 +46,8 @@ else
 fi
 
 # Restart SDDM to apply the theme (optional)
-echo "Restarting SDDM to apply the new theme..."
-systemctl restart sddm.service
+# echo "Restarting SDDM to apply the new theme..."
+# systemctl restart sddm.service
 
 echo "SDDM theme '$THEME_NAME' applied successfully!"
 echo "Your login screen should now show the selected theme."

@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SCRIPTS=(
     "$SCRIPT_DIR/set-sddm.sh"
     "$SCRIPT_DIR/set-splash.sh"
-    "$SCRIPT_DIR/insall-grub.sh"
+    "$SCRIPT_DIR/install-grub.sh"
     "$SCRIPT_DIR/set-theme.sh"
 )
 
@@ -19,7 +19,7 @@ for script in "${SCRIPTS[@]}"; do
     if [ -f "$script" ]; then
         echo
         echo "=== Running: $(basename "$script") ==="
-        sudo bash "$script"
+        sudo bash "$script" || echo "Warning: $(basename "$script") failed but continuing..."
     else
         echo "Warning: Script not found: $script"
     fi
